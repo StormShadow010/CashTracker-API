@@ -4,8 +4,6 @@ import cors from "cors";
 import morgan from "morgan";
 import compression from "compression";
 import swaggerUi from "swagger-ui-express";
-import fs from "fs";
-import path from "path";
 import { swaggerSpec } from "./config/swagger";
 import v1Routes from "./api/v1/index";
 import { errorMiddleware } from "./middlewares/error.middleware";
@@ -26,10 +24,12 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
+
 // ── Parsers y logging ─────────────────────────────────────────────────────────
 app.use(express.json());
 app.use(compression());
 app.use(morgan("dev"));
+
 // ── Swagger ───────────────────────────────────────────────────────────────────
 app.use(
   "/api/docs",
@@ -38,8 +38,10 @@ app.use(
     explorer: true,
   }),
 );
-// ── V1 API Routes ─────────────────────────────────────────────────────────
+
+// ── V1 API Routes ─────────────────────────────────────────────────────────────
 app.use("/api/v1", v1Routes);
+
 // ── Health check ──────────────────────────────────────────────────────────────
 app.get("/api/health", (_req: Request, res: Response) => {
   res.json({
@@ -49,41 +51,11 @@ app.get("/api/health", (_req: Request, res: Response) => {
     version: "1.0.0",
   });
 });
-app.get("/api/swagger-debug", (_req, res) => {
-  res.json(swaggerSpec);
-});
-app.get("/api/swagger-debug2", (_req, res) => {
-  const distPath = path.join(process.cwd(), "dist/modules");
-  try {
-    const files = fs.readdirSync(distPath, { recursive: true }) as string[];
-    const routes = files.filter((f: string) => f.includes("routes"));
-    res.json({ distPath, routes });
-  } catch (err) {
-    res.json({ error: String(err), distPath });
-  }
-});
-app.get("/api/swagger-debug3", (_req, res) => {
-  const filePath = path.join(process.cwd(), "dist/modules/auth/auth.routes.js");
-  try {
-    const content = fs.readFileSync(filePath, "utf-8");
-    res.send(`<pre>${content.substring(0, 2000)}</pre>`);
-  } catch (err) {
-    res.json({ error: String(err), cwd: process.cwd() });
-  }
-});
-app.get("/api/swagger-debug4", (_req, res) => {
-  const isDev = process.env.NODE_ENV === "development";
-  const routesPath = isDev
-    ? path.join(__dirname, "../modules/**/*.routes.ts")
-    : path.join(process.cwd(), "dist/modules/**/*.routes.js");
 
-  res.json({
-    isDev,
-    NODE_ENV: process.env.NODE_ENV,
-    routesPath,
-    cwd: process.cwd(),
-    dirname: __dirname,
-  });
+// ── 404 ───────────────────────────────────────────────────────────────────────
+app.use((_req: Request, res: Response) => {
+  res.status(404).json({ success: false, message: "Ruta no encontrada" });
 });
+
 // ── Error handler ─────────────────────────────────────────────────────────────
 app.use(errorMiddleware);

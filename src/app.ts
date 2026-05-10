@@ -47,5 +47,8 @@ app.get("/api/health", (_req: Request, res: Response) => {
     version: "1.0.0",
   });
 });
+app.get("/api/swagger-debug", (_req, res) => {
+  res.json(swaggerSpec);
+});
 // ── Error handler ─────────────────────────────────────────────────────────────
 app.use(errorMiddleware);

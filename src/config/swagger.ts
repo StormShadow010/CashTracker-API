@@ -3,6 +3,10 @@ import path from "path";
 
 const isDev = process.env.NODE_ENV === "development";
 
+const routesPath = isDev
+  ? path.join(__dirname, "../modules/**/*.routes.ts")
+  : path.join(__dirname, "modules/**/*.routes.js");
+
 const options: swaggerJsdoc.Options = {
   failOnErrors: false,
   definition: {
@@ -34,9 +38,7 @@ const options: swaggerJsdoc.Options = {
     },
     security: [{ bearerAuth: [] }],
   },
-  apis: isDev
-    ? [path.join(__dirname, "../modules/**/*.routes.ts")]
-    : [path.join(__dirname, "../modules/**/*.routes.js")],
+  apis: [routesPath],
 };
 
 export const swaggerSpec = swaggerJsdoc(options);

@@ -63,15 +63,12 @@ app.get("/api/swagger-debug2", (_req, res) => {
   }
 });
 app.get("/api/swagger-debug3", (_req, res) => {
-  const filePath = path.join(
-    process.cwd(),
-    "src/dist/modules/auth/auth.routes.js",
-  );
+  const filePath = path.join(process.cwd(), "dist/modules/auth/auth.routes.js");
   try {
     const content = fs.readFileSync(filePath, "utf-8");
     res.send(`<pre>${content.substring(0, 2000)}</pre>`);
   } catch (err) {
-    res.json({ error: String(err) });
+    res.json({ error: String(err), cwd: process.cwd() });
   }
 });
 // ── Error handler ─────────────────────────────────────────────────────────────

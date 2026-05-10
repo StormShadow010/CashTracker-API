@@ -5,7 +5,7 @@ const isDev = process.env.NODE_ENV === "development";
 
 const routesPath = isDev
   ? path.join(__dirname, "../modules/**/*.routes.ts")
-  : path.join(process.cwd(), "src/dist/modules/**/*.routes.js");
+  : path.join(process.cwd(), "dist/modules/**/*.routes.js");
 
 const options: swaggerJsdoc.Options = {
   failOnErrors: false,

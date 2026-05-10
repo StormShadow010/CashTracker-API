@@ -53,10 +53,10 @@ app.get("/api/swagger-debug", (_req, res) => {
   res.json(swaggerSpec);
 });
 app.get("/api/swagger-debug2", (_req, res) => {
-  const distPath = path.join(__dirname, "../modules");
+  const distPath = path.join(process.cwd(), "dist/modules");
   try {
     const files = fs.readdirSync(distPath, { recursive: true }) as string[];
-    const routes = files.filter((f) => f.includes("routes"));
+    const routes = files.filter((f: string) => f.includes("routes"));
     res.json({ distPath, routes });
   } catch (err) {
     res.json({ error: String(err), distPath });

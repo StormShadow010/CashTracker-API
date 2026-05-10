@@ -4,6 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 import compression from "compression";
 import v1Routes from "./api/v1/index";
+import { errorMiddleware } from "./middlewares/error.middleware";
 
 export const app = express();
 
@@ -25,3 +26,5 @@ app.get("/api/health", (_req: Request, res: Response) => {
     version: "1.0.0",
   });
 });
+// ── Error handler ─────────────────────────────────────────────────────────────
+app.use(errorMiddleware);

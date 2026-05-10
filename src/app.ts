@@ -3,6 +3,8 @@ import helmet from "helmet";
 import cors from "cors";
 import morgan from "morgan";
 import compression from "compression";
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./config/swagger";
 import v1Routes from "./api/v1/index";
 import { errorMiddleware } from "./middlewares/error.middleware";
 
@@ -15,6 +17,14 @@ app.use(cors());
 app.use(express.json());
 app.use(compression());
 app.use(morgan("dev"));
+// ── Swagger ───────────────────────────────────────────────────────────────────
+app.use(
+  "/api/docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, {
+    explorer: true,
+  }),
+);
 // ── V1 API Routes ─────────────────────────────────────────────────────────
 app.use("/api/v1", v1Routes);
 // ── Health check ──────────────────────────────────────────────────────────────

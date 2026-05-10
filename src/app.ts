@@ -71,5 +71,19 @@ app.get("/api/swagger-debug3", (_req, res) => {
     res.json({ error: String(err), cwd: process.cwd() });
   }
 });
+app.get("/api/swagger-debug4", (_req, res) => {
+  const isDev = process.env.NODE_ENV === "development";
+  const routesPath = isDev
+    ? path.join(__dirname, "../modules/**/*.routes.ts")
+    : path.join(process.cwd(), "dist/modules/**/*.routes.js");
+
+  res.json({
+    isDev,
+    NODE_ENV: process.env.NODE_ENV,
+    routesPath,
+    cwd: process.cwd(),
+    dirname: __dirname,
+  });
+});
 // ── Error handler ─────────────────────────────────────────────────────────────
 app.use(errorMiddleware);

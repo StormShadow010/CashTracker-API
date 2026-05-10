@@ -5,6 +5,7 @@ import morgan from "morgan";
 import compression from "compression";
 import swaggerUi from "swagger-ui-express";
 import fs from "fs";
+import path from "path";
 import { swaggerSpec } from "./config/swagger";
 import v1Routes from "./api/v1/index";
 import { errorMiddleware } from "./middlewares/error.middleware";

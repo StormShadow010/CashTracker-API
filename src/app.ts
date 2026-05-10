@@ -3,19 +3,45 @@ import helmet from "helmet";
 import cors from "cors";
 import morgan from "morgan";
 import compression from "compression";
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./config/swagger";
 import v1Routes from "./api/v1/index";
+import { errorMiddleware } from "./middlewares/error.middleware";
 
 export const app = express();
 
 // ── Seguridad ────────────────────────────────────────────────────────────────
-app.use(helmet());
-app.use(cors());
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+  }),
+);
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
+
 // ── Parsers y logging ─────────────────────────────────────────────────────────
 app.use(express.json());
 app.use(compression());
 app.use(morgan("dev"));
-// ── V1 API Routes ─────────────────────────────────────────────────────────
+
+// ── Swagger ───────────────────────────────────────────────────────────────────
+app.use(
+  "/api/docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, {
+    explorer: true,
+  }),
+);
+
+// ── V1 API Routes ─────────────────────────────────────────────────────────────
 app.use("/api/v1", v1Routes);
+
 // ── Health check ──────────────────────────────────────────────────────────────
 app.get("/api/health", (_req: Request, res: Response) => {
   res.json({
@@ -25,3 +51,11 @@ app.get("/api/health", (_req: Request, res: Response) => {
     version: "1.0.0",
   });
 });
+
+// ── 404 ───────────────────────────────────────────────────────────────────────
+app.use((_req: Request, res: Response) => {
+  res.status(404).json({ success: false, message: "Ruta no encontrada" });
+});
+
+// ── Error handler ─────────────────────────────────────────────────────────────
+app.use(errorMiddleware);

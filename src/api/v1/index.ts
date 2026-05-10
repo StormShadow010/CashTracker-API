@@ -1,12 +1,16 @@
 import { Router } from "express";
-//import AuthRouter from "../../modules/auth/auth.routes";
-//import BudgetRouter from "../../modules/budget/budget.routes";
-//import ExpenseRouter from "../../modules/expense/expense.routes";
+import authRouter from "../../modules/auth/auth.routes";
+import usersRouter from "../../modules/users/users.routes";
+import categoriesRouter from "../../modules/categories/categories.routes";
+import budgetsRouter from "../../modules/budgets/budgets.routes";
+import expensesRouter from "../../modules/expenses/expenses.routes";
 
 const router = Router();
 
-//router.use("/auth", AuthRouter);
-//router.use("/budget", BudgetRouter);
-//router.use("/budget/:budgetId/expense", ExpenseRouter);
+router.use("/auth", authRouter);
+router.use("/users", usersRouter);
+router.use("/categories", categoriesRouter);
+router.use("/budgets", budgetsRouter);
+router.use("/expenses", expensesRouter);
 
 export default router;

@@ -11,8 +11,19 @@ import { errorMiddleware } from "./middlewares/error.middleware";
 export const app = express();
 
 // ── Seguridad ────────────────────────────────────────────────────────────────
-app.use(helmet());
-app.use(cors());
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+  }),
+);
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
 // ── Parsers y logging ─────────────────────────────────────────────────────────
 app.use(express.json());
 app.use(compression());

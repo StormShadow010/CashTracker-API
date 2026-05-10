@@ -1,6 +1,8 @@
 import swaggerJsdoc from "swagger-jsdoc";
+import path from "path";
 
 const options: swaggerJsdoc.Options = {
+  failOnErrors: false,
   definition: {
     openapi: "3.0.0",
     info: {
@@ -10,8 +12,12 @@ const options: swaggerJsdoc.Options = {
     },
     servers: [
       {
-        url: "/api/v1",
-        description: "Versión actual",
+        url: "https://cashtracker-api.onrender.com/api/v1",
+        description: "Producción — Render",
+      },
+      {
+        url: "http://localhost:5000/api/v1",
+        description: "Desarrollo — Local",
       },
     ],
     components: {
@@ -26,7 +32,10 @@ const options: swaggerJsdoc.Options = {
     },
     security: [{ bearerAuth: [] }],
   },
-  apis: ["./src/modules/**/*.routes.ts"],
+  apis: [
+    path.join(__dirname, "../modules/**/*.routes.ts"),
+    path.join(__dirname, "../modules/**/*.routes.js"),
+  ],
 };
 
 export const swaggerSpec = swaggerJsdoc(options);

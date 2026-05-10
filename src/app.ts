@@ -4,6 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 import compression from "compression";
 import swaggerUi from "swagger-ui-express";
+import fs from "fs";
 import { swaggerSpec } from "./config/swagger";
 import v1Routes from "./api/v1/index";
 import { errorMiddleware } from "./middlewares/error.middleware";
@@ -49,6 +50,16 @@ app.get("/api/health", (_req: Request, res: Response) => {
 });
 app.get("/api/swagger-debug", (_req, res) => {
   res.json(swaggerSpec);
+});
+app.get("/api/swagger-debug2", (_req, res) => {
+  const distPath = path.join(__dirname, "../modules");
+  try {
+    const files = fs.readdirSync(distPath, { recursive: true }) as string[];
+    const routes = files.filter((f) => f.includes("routes"));
+    res.json({ distPath, routes });
+  } catch (err) {
+    res.json({ error: String(err), distPath });
+  }
 });
 // ── Error handler ─────────────────────────────────────────────────────────────
 app.use(errorMiddleware);
